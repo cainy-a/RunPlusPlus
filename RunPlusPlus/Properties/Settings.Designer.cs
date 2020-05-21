@@ -22,17 +22,5 @@ namespace RunPlusPlus.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\\\")]
-        public string CurrentPath {
-            get {
-                return ((string)(this["CurrentPath"]));
-            }
-            set {
-                this["CurrentPath"] = value;
-            }
-        }
     }
 }

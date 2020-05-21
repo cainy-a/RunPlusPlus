@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using RunPlusPlus.Properties;
 using static RunPlusPlus.ProcessWorker;
 
 namespace RunPlusPlus
@@ -15,12 +16,14 @@ namespace RunPlusPlus
 			if (VistaSecurity.IsAdmin()) return;
 			VistaSecurity.AddShieldToButton(buttonAdminRun);
 			VistaSecurity.AddShieldToButton(buttonOtherUserRun);
-
-			textBoxCommand.Text = _currentFile; // Makes the textbox initialise with the current file.
 		}
 
 		private string _currentFile = "C:\\"; // Stores which file is going to be run.
 		private bool _busy; // Makes sure that you can't spam the run button to open up too many copies of the same thing.
+		
+		private static readonly string CommonAppdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData); // Get the Appdata folder
+		//var pathSettingFile = $"{commonAppdata}\\CainAtkinson\\RunPlusPlus\\LastPath.txt"; // FALLBACK INCASE BELOW DOES NOT WORK
+		private static readonly string PathSettingFile = Path.Combine(CommonAppdata, "CainAtkinson\\RunPlusPlus\\LastPath.txt"); // Get the location of LastPath.txt
 
 		private void buttonBrowse_Click(object sender, EventArgs e)
 		{
@@ -63,6 +66,7 @@ namespace RunPlusPlus
 
 			_busy = true;
 			await Task.Factory.StartNew(() => RunProcess(_currentFile)); // Move this function call to another thread and call RunProcess
+			SaveLastPath();
 			Environment.Exit(0);
 		}
 
@@ -76,6 +80,44 @@ namespace RunPlusPlus
 				buttonRun_Click(new object(), new EventArgs());
 				e.Handled = true;
 			} // Catch enters in the textbox and press the Run button. Also sets e.handled to true to prevent a sound.
+		}
+
+		private void Form1_Load(object sender, EventArgs e)
+		{
+			ReadLastPath();
+			textBoxCommand.Text = _currentFile; // Makes the textbox initialise with the current file.
+		}
+
+		/// <summary>
+		/// if last path file exists then read it into CurrentFile
+		/// </summary>
+		private void ReadLastPath()
+		{
+			if (File.Exists(PathSettingFile))
+			{
+				using StreamReader sr = new StreamReader(PathSettingFile);
+				{
+					_currentFile = sr.ReadToEnd();
+					sr.Dispose();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Write the contents of CurrentFile into last path file
+		/// </summary>
+		private void SaveLastPath()
+		{
+			if (File.Exists(PathSettingFile))
+			{
+				File.Delete(PathSettingFile); // Remove old file
+			}
+
+			Directory.CreateDirectory(Directory.GetParent(PathSettingFile).FullName);
+			var sw = File.CreateText(PathSettingFile); // Create a new file, and opens a StreamWriter in it
+			sw.Write(_currentFile); // Write into the file.
+			sw.Flush(); // Makes sure that it actually wrote it
+			sw.Dispose();
 		}
 	}
 }
