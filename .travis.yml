@@ -1,7 +1,7 @@
 language: csharp
 
 install:
-- dotnet restore
+- nuget restore
 
 script:
  - mono build RunPlusPlus\RunPlusPlus.csproj
