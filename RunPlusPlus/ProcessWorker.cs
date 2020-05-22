@@ -7,7 +7,12 @@ namespace RunPlusPlus
 	{
 		public static void RunProcess(string processPath)
 		{
-			Process.Start(processPath);
+			RunProcess(new ProcessStartInfo(processPath));
+		}
+
+		public static void RunProcess(ProcessStartInfo processStartInfo)
+		{
+			Process.Start(processStartInfo);
 		}
 
 		public static bool ValidateResource(string resourcePath)

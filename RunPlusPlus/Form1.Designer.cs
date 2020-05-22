@@ -122,7 +122,7 @@ namespace RunPlusPlus
 			this.buttonOtherUserRun.Name = "buttonOtherUserRun";
 			this.buttonOtherUserRun.Size = new System.Drawing.Size(135, 23);
 			this.buttonOtherUserRun.TabIndex = 4;
-			this.buttonOtherUserRun.Text = "Run as another user";
+			this.buttonOtherUserRun.Text = "Run as another user...";
 			this.buttonOtherUserRun.UseVisualStyleBackColor = true;
 			this.buttonOtherUserRun.Click += new System.EventHandler(this.buttonOtherUserRun_Click);
 			// 

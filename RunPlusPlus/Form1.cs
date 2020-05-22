@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Security;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static RunPlusPlus.ProcessWorker;
@@ -14,7 +16,6 @@ namespace RunPlusPlus
 
 			if (VistaSecurity.IsAdmin()) return;
 			VistaSecurity.AddShieldToButton(buttonAdminRun);
-			VistaSecurity.AddShieldToButton(buttonOtherUserRun);
 		}
 
 		private string _currentFile = "C:\\"; // Stores which file is going to be run.
@@ -27,6 +28,10 @@ namespace RunPlusPlus
 
 		private static bool _controlHeld;
 		private static bool _shiftHeld;
+		
+		private static Form _otherUserForm = new OtherUserForm();
+		public static string Username;
+		public static SecureString Password;
 
 		private void buttonBrowse_Click(object sender, EventArgs e)
 		{
@@ -64,9 +69,34 @@ namespace RunPlusPlus
 			Environment.Exit(0);
 		}
 
-		private void buttonOtherUserRun_Click(object sender, EventArgs e)
+		private async void buttonOtherUserRun_Click(object sender, EventArgs e)
 		{
-			throw new System.NotImplementedException();
+			_otherUserForm.ShowDialog();
+			if (_busy) return;
+			if (!ValidateResource(_currentFile))
+			{
+				MessageBox.Show(
+					"It appears that the selected item doesn't actually exist... Try pick something else?",
+					"Non-Existent item",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
+				return;
+			}
+
+			_busy = true;
+
+			try
+			{
+				await Task.Factory.StartNew(
+					() => RunProcess(new ProcessStartInfo(fileName: _currentFile) {UserName = Username, Password = Password}));
+			} // Move this function call to another thread and call RunProcess
+			catch
+			{
+				// ignored
+			}
+
+			SaveLastPath();
+			Environment.Exit(0);
 		}
 
 		private async void buttonRun_Click(object sender, EventArgs e)
