@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace RunPlusPlus
 {
@@ -95,6 +96,7 @@ namespace RunPlusPlus
 			this.Text = "Run as other user";
 			this.ResumeLayout(false);
 			this.PerformLayout();
+			this.KeyDown += new KeyEventHandler(this.keyDown);
 		}
 
 		private System.Windows.Forms.Button buttonDone;

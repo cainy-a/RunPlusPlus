@@ -20,8 +20,18 @@ namespace RunPlusPlus
 				temp.AppendChar(character);
 			}
 			Form1.Password = temp;
-			temp.Dispose();
+			textBoxPassword.Text = "";
+			GC.Collect();
+			GC.WaitForPendingFinalizers(); // Does this purge the entered string???
 			Close();
+		}
+
+		private void keyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				buttonDone_Click(new object(), new EventArgs());
+			}
 		}
 	}
 }

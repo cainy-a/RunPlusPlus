@@ -85,15 +85,21 @@ namespace RunPlusPlus
 
 			_busy = true;
 
-			try
-			{
-				await Task.Factory.StartNew(
-					() => RunProcess(new ProcessStartInfo(fileName: _currentFile) {UserName = Username, Password = Password}));
-			} // Move this function call to another thread and call RunProcess
+		//	try
+		//	{
+				await Task.Factory.StartNew(() =>
+					{
+						var info = new ProcessStartInfo { UserName = Username, Password = Password, UseShellExecute = false };
+						if (!ValidateResource(_currentFile))
+							return;
+						info.FileName = _currentFile;
+						RunProcess(info);
+					});
+		/*	} // Move this function call to another thread and call RunProcess
 			catch
 			{
 				// ignored
-			}
+			} */
 
 			SaveLastPath();
 			Environment.Exit(0);
