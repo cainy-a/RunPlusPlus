@@ -77,6 +77,7 @@ namespace RunPlusPlus
 			this.textBoxCommand.TabIndex = 3;
 			this.textBoxCommand.TextChanged += new System.EventHandler(this.textBoxCommand_TextChanged);
 			this.textBoxCommand.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxCommand_KeyDown);
+			this.textBoxCommand.KeyUp += new System.Windows.Forms.KeyEventHandler(this.textBoxCommand_KeyUp);
 			// 
 			// buttonBrowse
 			// 

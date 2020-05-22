@@ -25,6 +25,9 @@ namespace RunPlusPlus
 		private static readonly string PathSettingFile = Path.Combine(CommonAppdata, "CainAtkinson\\RunPlusPlus\\LastPath.txt"); // Get the location of LastPath.
 		private static readonly string RunOnStartFile = Path.Combine(CommonAppdata, "CainAtkinson\\RunPlusPlus\\RunStart.txt");
 
+		private static bool _controlHeld;
+		private static bool _shiftHeld;
+
 		private void buttonBrowse_Click(object sender, EventArgs e)
 		{
 			if (Directory.Exists(_currentFile))
@@ -100,13 +103,39 @@ namespace RunPlusPlus
 
 		private void textBoxCommand_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Enter)
+			switch (e.KeyCode)
 			{
-				buttonRun_Click(new object(), new EventArgs());
-				e.Handled = true;
-			} // Catch enters in the textbox and press the Run button. Also sets e.handled to true to prevent a sound.
+				case Keys.ControlKey:
+					_controlHeld = true;
+					e.Handled = true;
+					break; // set _controlHeld to true when ctrl is pressed
+				case Keys.ShiftKey:
+					_shiftHeld = true;
+					e.Handled = true;
+					break;// set _shiftHeld to true when shift is pressed
+				case Keys.Enter:
+					if (_controlHeld && _shiftHeld) 
+						buttonAdminRun_Click(new object(), new EventArgs()); // Make Ctrl+Shift+Enter Run as Admin, like in standard Run dialog
+					else buttonRun_Click(new object(), new EventArgs());
+					e.Handled = true;
+					break; // Catch enters in the textbox and press the Run button.
+			}
 		}
 
+		private void textBoxCommand_KeyUp(object sender, KeyEventArgs e)
+		{
+			switch (e.KeyCode)
+			{
+				case Keys.ControlKey:
+					_controlHeld = false;
+					e.Handled = true;
+					break; // set _controlHeld to false when ctrl is released
+				case Keys.ShiftKey:
+					_shiftHeld = false;
+					e.Handled = true;
+					break; // set _shiftHeld to false when shift is released
+			}
+		}
 		private async void Form1_Load(object sender, EventArgs e)
 		{
 			ReadLastPath();
