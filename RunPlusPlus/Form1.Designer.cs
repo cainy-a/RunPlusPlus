@@ -31,6 +31,7 @@ namespace RunPlusPlus
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
@@ -45,19 +46,21 @@ namespace RunPlusPlus
 			// 
 			// pictureBox1
 			// 
+			this.pictureBox1.Image = ((System.Drawing.Image) (resources.GetObject("pictureBox1.Image")));
 			this.pictureBox1.Location = new System.Drawing.Point(12, 12);
 			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(59, 54);
+			this.pictureBox1.Size = new System.Drawing.Size(65, 61);
 			this.pictureBox1.TabIndex = 0;
 			this.pictureBox1.TabStop = false;
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(77, 12);
+			this.label1.Location = new System.Drawing.Point(83, 12);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(351, 54);
+			this.label1.Size = new System.Drawing.Size(345, 61);
 			this.label1.TabIndex = 1;
 			this.label1.Text = "Type the name of a program, folder, document, or Internet Resource, and Run++ wil" + "l open it for you";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// label2
 			// 
@@ -127,6 +130,7 @@ namespace RunPlusPlus
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.SystemColors.ControlLightLight;
 			this.ClientSize = new System.Drawing.Size(440, 176);
 			this.Controls.Add(this.buttonOtherUserRun);
 			this.Controls.Add(this.buttonAdminRun);
@@ -137,6 +141,7 @@ namespace RunPlusPlus
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.pictureBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "Form1";
