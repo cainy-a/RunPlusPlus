@@ -23,7 +23,8 @@ namespace RunPlusPlus
 		
 		private static readonly string CommonAppdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData); // Get the Appdata folder
 		//var pathSettingFile = $"{commonAppdata}\\CainAtkinson\\RunPlusPlus\\LastPath.txt"; // FALLBACK INCASE BELOW DOES NOT WORK
-		private static readonly string PathSettingFile = Path.Combine(CommonAppdata, "CainAtkinson\\RunPlusPlus\\LastPath.txt"); // Get the location of LastPath.txt
+		private static readonly string PathSettingFile = Path.Combine(CommonAppdata, "CainAtkinson\\RunPlusPlus\\LastPath.txt"); // Get the location of LastPath.
+		private static readonly string RunOnStartFile = Path.Combine(CommonAppdata, "CainAtkinson\\RunPlusPlus\\RunStart.txt");
 
 		private void buttonBrowse_Click(object sender, EventArgs e)
 		{
@@ -43,7 +44,22 @@ namespace RunPlusPlus
 
 		private void buttonAdminRun_Click(object sender, EventArgs e)
 		{
-			throw new System.NotImplementedException();
+			if (_busy) return;
+			if (!ValidateResource(_currentFile))
+			{
+				MessageBox.Show(
+					"It appears that the selected item doesn't actually exist... Try pick something else?",
+					"Non-Existent item",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
+				return;
+			}
+
+			_busy = true;
+			SaveLastPath();
+			SaveStartRun(true);
+			VistaSecurity.RestartElevated();
+			Environment.Exit(0);
 		}
 
 		private void buttonOtherUserRun_Click(object sender, EventArgs e)
@@ -82,9 +98,15 @@ namespace RunPlusPlus
 			} // Catch enters in the textbox and press the Run button. Also sets e.handled to true to prevent a sound.
 		}
 
-		private void Form1_Load(object sender, EventArgs e)
+		private async void Form1_Load(object sender, EventArgs e)
 		{
 			ReadLastPath();
+			if (ReadStartRun())
+			{
+				await Task.Factory.StartNew(() => RunProcess(_currentFile));
+				SaveStartRun(false);
+				Environment.Exit(0);
+			}
 			textBoxCommand.Text = _currentFile; // Makes the textbox initialise with the current file.
 		}
 
@@ -101,6 +123,45 @@ namespace RunPlusPlus
 					sr.Dispose();
 				}
 			}
+		}
+		
+		/// <summary>
+		/// Checks to see if we should run LastPath on startup
+		/// </summary>
+		/// <returns>whether or not to run LastPath</returns>
+		private bool ReadStartRun()
+		{
+			if (File.Exists(RunOnStartFile))
+			{
+				string toReturn;
+				using StreamReader sr = new StreamReader(RunOnStartFile);
+				{
+					toReturn = sr.ReadToEnd();
+					sr.Dispose();
+				}
+				if (toReturn == "1") return true;
+			}
+			return false;
+		}
+		
+		/// <summary>
+		/// Saves whether or not to run last path on startup
+		/// </summary>
+		/// <param name="value">What value to save</param>
+		private void SaveStartRun(bool value)
+		{
+			var toWrite = value ? "1" : "0";
+
+			if (File.Exists(RunOnStartFile))
+			{
+				File.Delete(RunOnStartFile); // Remove old file
+			}
+
+			Directory.CreateDirectory(Directory.GetParent(RunOnStartFile).FullName);
+			var sw = File.CreateText(RunOnStartFile); // Create a new file, and opens a StreamWriter in it
+			sw.Write(toWrite); // Write into the file.
+			sw.Flush(); // Makes sure that it actually wrote it
+			sw.Dispose();
 		}
 
 		/// <summary>

@@ -14,9 +14,9 @@ namespace RunPlusPlus
 
 		internal const int BCM_FIRST = 0x1600; //Normal button
 		internal const int BCM_SETSHIELD = (BCM_FIRST + 0x000C); //Elevated button
-		
+
 		// API Stuff up here ^^^
-		
+
 		static internal bool IsAdmin()
 		{
 			var id = WindowsIdentity.GetCurrent();
@@ -29,7 +29,7 @@ namespace RunPlusPlus
 			b.FlatStyle = FlatStyle.System;
 			SendMessage(b.Handle, BCM_SETSHIELD, 0, 0xFFFFFFFF);
 		} // Adds a shield to a button when called
-		
+
 		internal static void RestartElevated()
 		{
 			var startInfo = new ProcessStartInfo();
@@ -41,7 +41,7 @@ namespace RunPlusPlus
 			{
 				var p = Process.Start(startInfo);
 			}
-			catch(System.ComponentModel.Win32Exception)
+			catch (System.ComponentModel.Win32Exception)
 			{
 				return;
 			}
