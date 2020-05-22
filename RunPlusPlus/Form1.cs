@@ -2,7 +2,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using RunPlusPlus.Properties;
 using static RunPlusPlus.ProcessWorker;
 
 namespace RunPlusPlus
@@ -81,7 +80,17 @@ namespace RunPlusPlus
 			}
 
 			_busy = true;
-			await Task.Factory.StartNew(() => RunProcess(_currentFile)); // Move this function call to another thread and call RunProcess
+
+			try
+			{
+				await Task.Factory.StartNew(
+					() => RunProcess(_currentFile)); // Move this function call to another thread and call RunProcess
+			}
+			catch
+			{
+				// ignored
+			}
+
 			SaveLastPath();
 			Environment.Exit(0);
 		}
